@@ -4,6 +4,8 @@ Includes hopping in the c direction.
 
 Unit testing is done with [fUnit](http://nasarb.rubyforge.org/funit/).
 
+Considerable advice taken from the Cambridge [course on Modern Fortran](http://www-uxsup.csx.cam.ac.uk/courses/Fortran/).
+
 ## Modules
 
 * double.f90
