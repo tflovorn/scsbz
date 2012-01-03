@@ -15,7 +15,7 @@ Considerable advice taken from the Cambridge [course on Modern Fortran](http://w
 * environment.f90
     * Define data type holding relevant environment variables needed for evaluating error in self-consistent equations.
 * brillouin.f90
-    * Evaluate a sum over the first Brillouin zone.
+    * Evaluate a sum over the first Brillouin zone (square lattice).
 * scsolve.f90
     * Define data type for a self-consistent equation. Solve individual equations and systems of equations.
 * scequations.f90
