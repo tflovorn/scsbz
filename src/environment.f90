@@ -21,28 +21,28 @@ contains
         ! dependent parameters
         function Jc(env)
             implicit none
-            type(Environ) :: env
+            type(Environ), intent(in) :: env
             real(kind=DP) :: Jc
             Jc = (env%tc / env%t) ** 2.0_DP
         end function Jc
 
         function Eh(env)
             implicit none
-            type(Environ) :: env
+            type(Environ), intent(in) :: env
             real(kind=DP) :: Eh
             Eh = env%t * env%D + 0.5_DP * env%J * env%B
         end function Eh
 
         function Ehc(env)
             implicit none
-            type(Environ) :: env
+            type(Environ), intent(in) :: env
             real(kind=DP) :: Ehc
             Ehc = env%tc * env%Dc + 0.5_DP * Jc(env) * env%Bc
         end function Ehc
 
         function epsilonMin(env)
             implicit none
-            type(Environ) :: env
+            type(Environ), intent(in) :: env
             real(kind=DP) :: epsilonMin
             epsilonMin = -2.0_DP * (2.0_DP * Eh(env) + Ehc(env))
         end function epsilonMin
@@ -50,8 +50,8 @@ contains
         ! constructor
         function NewEnv(zoneLength, t, tc, beta, x, J)
             implicit none
-            integer :: zoneLength
-            real(kind=DP) :: t, tc, beta, x, J
+            integer, intent(in) :: zoneLength
+            real(kind=DP), intent(in) :: t, tc, beta, x, J
             type(Environ) :: NewEnv
             ! copy parameters
             NewEnv%zoneLength = zoneLength
@@ -68,5 +68,4 @@ contains
             NewEnv%A = 0.1
             NewEnv%Ac = 0.1
         end function NewEnv
-
 end module environment
