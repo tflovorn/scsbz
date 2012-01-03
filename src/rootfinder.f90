@@ -10,6 +10,13 @@ contains
         ! (could reduce number of fn calls by memoizing already-seen values)
         real(kind=DP), intent(in) :: leftBound, rightBound
         real(kind=DP), intent(out) :: leftBracket, rightBracket
+        interface
+            function targetFunc(x)
+                use double
+                real(kind=DP), intent(in) :: x
+                real(kind=DP) :: targetFunc
+            end function
+        end interface
         integer, intent(out) :: error
         integer :: minSteps, maxSteps, numSteps, n
         real(kind=DP) :: stepLength, left, right, a, b
@@ -45,4 +52,8 @@ contains
         ! if we get here, overflowed step size limit
         error = 1
     end subroutine
+
+    ! Find a root of targetFunc between leftBound and rightBound by bisection.
+    ! Assumes that leftBound and rightBound bracket a root. If error = 1, no
+    ! root is bracketed. Assumes that targetFunc is continuous.
 end module rootfinder
