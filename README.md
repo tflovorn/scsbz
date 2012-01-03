@@ -1,4 +1,6 @@
-Solution of mean-field self-consistent equations for the slave-boson formalism of high-temperature superconductivity in the cuprates.  Includes hopping in the c direction.
+Solution of mean-field self-consistent equations for the slave-boson formalism of high-temperature superconductivity in the cuprates.
+
+Includes hopping in the c direction.
 
 Unit testing is done with [fUnit](http://nasarb.rubyforge.org/funit/).
 
