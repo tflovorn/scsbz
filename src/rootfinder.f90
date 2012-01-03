@@ -24,7 +24,7 @@ contains
             error = 2
             return
         end if
-        minSteps = 2
+        minSteps = 1
         maxSteps = minSteps * 256
         numSteps = minSteps
         varyStepSize: do
@@ -54,6 +54,46 @@ contains
     end subroutine
 
     ! Find a root of targetFunc between leftBound and rightBound by bisection.
-    ! Assumes that leftBound and rightBound bracket a root. If error = 1, no
-    ! root is bracketed. Assumes that targetFunc is continuous.
+    ! Assumes that leftBracket and rightBracket bracket a root. If error = 1, 
+    ! no root is bracketed. Assumes that targetFunc is continuous.
+    ! Looks for a zero to an accuracy equal to the machine precision.
+    function BisectionRoot(targetFunc, leftBracket, rightBracket, error)
+        real(kind=DP), intent(in) :: leftBracket, rightBracket
+        integer, intent(out) :: error
+        interface
+            function targetFunc(x)
+                use double
+                real(kind=DP), intent(in) :: x
+                real(kind=DP) :: targetFunc
+            end function
+        end interface
+        real(kind=DP) :: BisectionRoot, a, b, low, high, mid
+        a = targetFunc(leftBracket)
+        b = targetFunc(rightBracket)
+        if (.not. ((a >= 0 .and. b <= 0) .or. (a <= 0 .and. b >= 0))) then
+            error = 1
+            return
+        end if
+        if (a <= 0) then
+            low = a
+            high = b
+        else
+            low = b
+            high = a
+        end if
+        mid = low + (high - low) / 2.0_DP
+        do
+            if ((mid == low) .or. (mid == high)) then
+                error = 0
+                BisectionRoot = mid
+                return
+            end if
+            if (targetFunc(mid) <= 0) then
+                low = mid
+            else
+                high = mid
+            end if
+            mid = low + (high - low) / 2.0_DP
+        end do
+    end function
 end module rootfinder
