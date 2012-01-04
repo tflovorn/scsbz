@@ -10,8 +10,6 @@ Considerable advice taken from the Cambridge [course on Modern Fortran](http://w
 
 * double.f90
     * Define double-precision data type.
-* rootfinder.f90
-    * Find a root of the given function. Assume only one root exists in the specified range.
 * environment.f90
     * Define data type holding relevant environment variables needed for evaluating error in self-consistent equations.
 * brillouin.f90
