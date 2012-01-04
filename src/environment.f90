@@ -18,54 +18,54 @@ module environment
                          Ac     ! c-direction singlet formation
     end type Environ
 contains
-        ! dependent parameters
-        function Jc(env)
-            implicit none
-            type(Environ), intent(in) :: env
-            real(kind=DP) :: Jc
-            Jc = (env%tc / env%t) ** 2.0_DP
-        end function Jc
+    ! dependent parameters
+    function Jc(env)
+        implicit none
+        type(Environ), intent(in) :: env
+        real(kind=DP) :: Jc
+        Jc = (env%tc / env%t) ** 2.0_DP
+    end function Jc
 
-        function Eh(env)
-            implicit none
-            type(Environ), intent(in) :: env
-            real(kind=DP) :: Eh
-            Eh = env%t * env%D + 0.5_DP * env%J * env%B
-        end function Eh
+    function Eh(env)
+        implicit none
+        type(Environ), intent(in) :: env
+        real(kind=DP) :: Eh
+        Eh = env%t * env%D + 0.5_DP * env%J * env%B
+    end function Eh
 
-        function Ehc(env)
-            implicit none
-            type(Environ), intent(in) :: env
-            real(kind=DP) :: Ehc
-            Ehc = env%tc * env%Dc + 0.5_DP * Jc(env) * env%Bc
-        end function Ehc
+    function Ehc(env)
+        implicit none
+        type(Environ), intent(in) :: env
+        real(kind=DP) :: Ehc
+        Ehc = env%tc * env%Dc + 0.5_DP * Jc(env) * env%Bc
+    end function Ehc
 
-        function epsilonMin(env)
-            implicit none
-            type(Environ), intent(in) :: env
-            real(kind=DP) :: epsilonMin
-            epsilonMin = -2.0_DP * (2.0_DP * Eh(env) + Ehc(env))
-        end function epsilonMin
+    function epsilonMin(env)
+        implicit none
+        type(Environ), intent(in) :: env
+        real(kind=DP) :: epsilonMin
+        epsilonMin = -2.0_DP * (2.0_DP * Eh(env) + Ehc(env))
+    end function epsilonMin
 
-        ! constructor
-        function NewEnv(zoneLength, t, tc, beta, x, J)
-            implicit none
-            integer, intent(in) :: zoneLength
-            real(kind=DP), intent(in) :: t, tc, beta, x, J
-            type(Environ) :: NewEnv
-            ! copy parameters
-            NewEnv%zoneLength = zoneLength
-            NewEnv%t = t
-            NewEnv%tc = tc
-            NewEnv%beta = beta
-            NewEnv%x = x
-            NewEnv%J = J
-            ! default values (TODO: change to reasonable guesses)
-            NewEnv%D = 0.1
-            NewEnv%Dc = 0.1
-            NewEnv%B = 0.1
-            NewEnv%Bc = 0.1
-            NewEnv%A = 0.1
-            NewEnv%Ac = 0.1
-        end function NewEnv
+    ! constructor
+    function NewEnv(zoneLength, t, tc, beta, x, J)
+        implicit none
+        integer, intent(in) :: zoneLength
+        real(kind=DP), intent(in) :: t, tc, beta, x, J
+        type(Environ) :: NewEnv
+        ! copy parameters
+        NewEnv%zoneLength = zoneLength
+        NewEnv%t = t
+        NewEnv%tc = tc
+        NewEnv%beta = beta
+        NewEnv%x = x
+        NewEnv%J = J
+        ! default values (TODO: change to reasonable guesses)
+        NewEnv%D = 0.1
+        NewEnv%Dc = 0.1
+        NewEnv%B = 0.1
+        NewEnv%Bc = 0.1
+        NewEnv%A = 0.1
+        NewEnv%Ac = 0.1
+    end function NewEnv
 end module environment

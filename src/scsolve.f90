@@ -8,7 +8,6 @@ module scsolve
         procedure(absErrorInterface), pointer, nopass :: absError
     contains
         procedure :: absErrorWith => scEqAbsErrorWith
-        procedure :: solve => scEqSolve
     end type
 
     abstract interface
@@ -48,28 +47,29 @@ contains
 
     ! Modify env to minimize the magnitude of absError(env), solving
     ! scEquation. Returns 1 if no solution could be found, 0 otherwise.
-    function scEqSolve(this, env) result(error)
-        class(SelfConsistentEq), intent(in) :: this
+    function scEqSolve(scEquation, env) result(error)
+        type(SelfConsistentEq), intent(in) :: scEquation
         type(Environ), intent(inout) :: env
         integer :: error
         real(kind=DP) :: leftBracket, rightBracket, solution
-        call BracketRoot(this, env, leftBracket, rightBracket, error)
+        call BracketRoot(scEquation, env, leftBracket, rightBracket, error)
         if (error > 0) then
             return
         end if
-        solution = BisectionRoot(this, env, leftBracket, rightBracket, error)
+        solution = BisectionRoot(scEquation, env, leftBracket, rightBracket,&
+                                 error)
         if (error > 0) then
             return
         end if
         ! Shouldn't really assign here, same as in scEqAbsErrorWith.
-        solution = this%setArg(env, solution)
+        solution = scEquation%setArg(env, solution)
     end function
 
     ! Return a bracket for the leftmost root of scEquation between argMin
     ! and argMax. If error = 1, no root was found.
     subroutine BracketRoot(scEquation, env, leftBracket, rightBracket, error)
         real(kind=DP), intent(out) :: leftBracket, rightBracket
-        class(SelfConsistentEq), intent(in) :: scEquation
+        type(SelfConsistentEq), intent(in) :: scEquation
         type(Environ) :: env
         integer, intent(out) :: error
         integer :: minSteps, maxSteps, numSteps, n
@@ -119,7 +119,7 @@ contains
     function BisectionRoot(scEquation, env, leftBracket, rightBracket, error)
         real(kind=DP), intent(in) :: leftBracket, rightBracket
         integer, intent(out) :: error
-        class(SelfConsistentEq), intent(in) :: scEquation
+        type(SelfConsistentEq), intent(in) :: scEquation
         type(Environ) :: env
         real(kind=DP) :: BisectionRoot, a, b, low, high, mid
         a = scEquation%absErrorWith(env, leftBracket)
