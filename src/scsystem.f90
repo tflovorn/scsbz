@@ -47,6 +47,7 @@ contains
         type(SelfConsistentSystem), intent(in) :: system
         type(Environ), intent(inout) :: env
         integer :: error, i
+        error = 0
         i = 0
         do
             if (system%isSolved(env)) then
