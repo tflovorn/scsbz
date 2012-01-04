@@ -41,7 +41,8 @@ contains
         real(kind=DP) :: absError, orig
         orig = this%setArg(env, x)
         absError = this%absError(env)
-        ! shouldn't really be assigning here, but need to for compilation
+        ! Shouldn't really be assigning here, but need to for compilation.
+        ! Assignment doesn't affect result.
         orig = this%setArg(env, orig)
     end function
 
@@ -51,13 +52,24 @@ contains
         class(SelfConsistentEq), intent(in) :: this
         type(Environ), intent(inout) :: env
         integer :: error
+        real(kind=DP) :: leftBracket, rightBracket, solution
+        call BracketRoot(this, env, leftBracket, rightBracket, error)
+        if (error > 0) then
+            return
+        end if
+        solution = BisectionRoot(this, env, leftBracket, rightBracket, error)
+        if (error > 0) then
+            return
+        end if
+        ! Shouldn't really assign here, same as in scEqAbsErrorWith.
+        solution = this%setArg(env, solution)
     end function
 
     ! Return a bracket for the leftmost root of scEquation between argMin
     ! and argMax. If error = 1, no root was found.
     subroutine BracketRoot(scEquation, env, leftBracket, rightBracket, error)
         real(kind=DP), intent(out) :: leftBracket, rightBracket
-        type(SelfConsistentEq), intent(in) :: scEquation
+        class(SelfConsistentEq), intent(in) :: scEquation
         type(Environ) :: env
         integer, intent(out) :: error
         integer :: minSteps, maxSteps, numSteps, n
@@ -107,7 +119,7 @@ contains
     function BisectionRoot(scEquation, env, leftBracket, rightBracket, error)
         real(kind=DP), intent(in) :: leftBracket, rightBracket
         integer, intent(out) :: error
-        type(SelfConsistentEq), intent(in) :: scEquation
+        class(SelfConsistentEq), intent(in) :: scEquation
         type(Environ) :: env
         real(kind=DP) :: BisectionRoot, a, b, low, high, mid
         a = scEquation%absErrorWith(env, leftBracket)
