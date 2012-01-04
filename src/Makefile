@@ -3,7 +3,7 @@ FFLAGS =
 
 LDFLAGS =
 
-all: scsolve.mod brillouin.mod
+all: scsystem.mod brillouin.mod
 
 double.mod double.o: double.f90
 	$(FC) $(FFLAGS) -c -o double.o double.f90
@@ -16,3 +16,6 @@ brillouin.mod brillouin.o: environment.mod environment.o brillouin.f90
 
 scsolve.mod scsolve.o: environment.mod environment.o scsolve.f90
 	$(FC) $(FFLAGS) -c -o scsolve.o scsolve.f90
+
+scsystem.mod scsystem.o: scsolve.mod scsolve.o scsystem.f90
+	$(FC) $(FFLAGS) -c -o scsystem.o scsystem.f90

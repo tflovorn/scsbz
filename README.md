@@ -1,4 +1,4 @@
-Solution of mean-field self-consistent equations for the slave-boson formalism of high-temperature superconductivity in the cuprates.
+Solution of mean-field self-consistent equations in the pseudogap state for the slave-boson formalism of high-temperature superconductivity in the cuprates.
 
 Includes hopping in the c direction.
 
@@ -15,9 +15,11 @@ Considerable advice taken from the Cambridge [course on Modern Fortran](http://w
 * brillouin.f90
     * Evaluate a sum over the first Brillouin zone (square lattice).
 * scsolve.f90
-    * Define data type for a self-consistent equation. Solve individual equations and systems of equations.
-* scequations.f90
-    * Define the self-consistent equations for the system.
+    * Define data type for a self-consistent equation. Solve individual equations.
+* scsystem.f90
+    * Define data type for a system of self-consistent equations. Solve that system to given tolerances.
+* sbzequations.f90
+    * Define the self-consistent equations for the slave-boson system.
 * driver.f90
     * Read environment(s) from a specified input file, solve the corresponding self-consistent system(s), and output the results to a specified output file.
 * main.f90
