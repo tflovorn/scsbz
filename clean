@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd src
-rm *.mod *.o
+rm *.mod *.o *TestRunner* *_fun.f90

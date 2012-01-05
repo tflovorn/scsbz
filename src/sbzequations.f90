@@ -2,6 +2,8 @@ module sbzequations
     use double
     use environment
     use brillouin
+    use scsolve
+    use scsystem
     implicit none
 contains
     ! Fermi distribution function.
