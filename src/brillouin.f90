@@ -10,6 +10,7 @@ contains
             function sumFunc(env, k)
                 use double
                 use environment
+                implicit none
                 type(Environ), intent(in) :: env
                 real(kind=DP), intent(in) :: k(1:3)
                 real(kind=DP) :: sumFunc
