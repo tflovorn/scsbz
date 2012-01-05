@@ -6,8 +6,6 @@ module scsolve
         real(kind=DP) :: argMin, argMax
         procedure(setArgInterface), pointer, nopass :: setArg
         procedure(absErrorInterface), pointer, nopass :: absError
-    contains
-        procedure :: absErrorWith => scEqAbsErrorWith
     end type
 
     abstract interface
@@ -16,16 +14,18 @@ module scsolve
         function setArgInterface(env, x)
             use double
             use environment
+            implicit none
             type(Environ), intent(out) :: env
             real(kind=DP), intent(in) :: x
-            real(kind=DP) :: setArg
+            real(kind=DP) :: setArgInterface
         end function
         ! Return the (signed) absolute error of the equation using env.
         function absErrorInterface(env)
             use double
             use environment
+            implicit none
             type(Environ), intent(in) :: env
-            real(kind=DP) :: absError
+            real(kind=DP) :: absErrorInterface
         end function
     end interface
 contains
@@ -33,16 +33,16 @@ contains
     ! arguments except the one corresponding to this equation. Set that
     ! argument to env, evaluate the error, then replace the argument with its
     ! original value.
-    function scEqAbsErrorWith(this, env, x) result(absError)
-        class(SelfConsistentEq), intent(in) :: this
+    function absErrorWith(scEquation, env, x)
+        class(SelfConsistentEq), intent(in) :: scEquation
         type(Environ), intent(inout) :: env
         real(kind=DP), intent(in) :: x
-        real(kind=DP) :: absError, orig
-        orig = this%setArg(env, x)
-        absError = this%absError(env)
+        real(kind=DP) :: absErrorWith, orig
+        orig = scEquation%setArg(env, x)
+        absErrorWith = scEquation%absError(env)
         ! Shouldn't really be assigning here, but need to for compilation.
         ! Assignment doesn't affect result.
-        orig = this%setArg(env, orig)
+        orig = scEquation%setArg(env, orig)
     end function
 
     ! Modify env to minimize the magnitude of absError(env), solving
@@ -91,8 +91,8 @@ contains
             left = leftBound
             right = leftBound + stepLength
             varyFunctionArgs: do n=1, numSteps
-                a = scEquation%absErrorWith(env, left)
-                b = scEquation%absErrorWith(env, right)
+                a = absErrorWith(scEquation, env, left)
+                b = absErrorWith(scEquation, env, right)
                 if (a == 0 .or. b == 0 .or. (a > 0 .and. b < 0) .or. &
                   (a < 0 .and. b > 0)) then
                     error = 0
@@ -122,18 +122,18 @@ contains
         type(SelfConsistentEq), intent(in) :: scEquation
         type(Environ) :: env
         real(kind=DP) :: BisectionRoot, a, b, low, high, mid
-        a = scEquation%absErrorWith(env, leftBracket)
-        b = scEquation%absErrorWith(env, rightBracket)
+        a = absErrorWith(scEquation, env, leftBracket)
+        b = absErrorWith(scEquation, env, rightBracket)
         if (.not. ((a >= 0 .and. b <= 0) .or. (a <= 0 .and. b >= 0))) then
             error = 1
             return
         end if
         if (a <= 0) then
-            low = a
-            high = b
+            low = leftBracket
+            high = rightBracket
         else
-            low = b
-            high = a
+            low = rightBracket
+            high = leftBracket
         end if
         mid = low + (high - low) / 2.0_DP
         do
@@ -142,7 +142,7 @@ contains
                 BisectionRoot = mid
                 return
             end if
-            if (scEquation%absErrorWith(env, mid) <= 0) then
+            if (absErrorWith(scEquation, env, mid) <= 0) then
                 low = mid
             else
                 high = mid
