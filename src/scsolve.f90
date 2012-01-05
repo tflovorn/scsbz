@@ -34,7 +34,7 @@ contains
     ! argument to env, evaluate the error, then replace the argument with its
     ! original value.
     function absErrorWith(scEquation, env, x)
-        class(SelfConsistentEq), intent(in) :: scEquation
+        type(SelfConsistentEq), intent(in) :: scEquation
         type(Environ), intent(inout) :: env
         real(kind=DP), intent(in) :: x
         real(kind=DP) :: absErrorWith, orig

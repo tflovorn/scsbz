@@ -1,3 +1,5 @@
 *.swp
 *.mod
 *.o
+*TestRunner*
+*_fun.f90
