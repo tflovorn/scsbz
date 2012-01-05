@@ -16,11 +16,11 @@ module environment
                          Bc,&   ! c-direction spinon hopping
                          A,&    ! in-plane singlet formation
                          Ac,&   ! c-direction singlet formation
-                         muf,&  ! spinon chemical potential
-                         mub    ! holon chemical potential   
+                         muF,&  ! spinon chemical potential
+                         muB    ! holon chemical potential   
     end type Environ
 contains
-    ! dependent parameters
+    ! --- Dependent parameters. ---
     ! c-direction singlet energy
     function Jc(env)
         type(Environ), intent(in) :: env
@@ -42,31 +42,62 @@ contains
         Ehc = env%tc * env%Dc + 0.5_DP * Jc(env) * env%Bc
     end function Ehc
 
-    ! minimum of the spinon spectrum
-    function epsilonMin(env)
+    ! Minimum of the spinon spectrum.
+    ! Should work whether Eh and Ehc are positive or negative.
+    function epsilonMinF(env)
         type(Environ), intent(in) :: env
-        real(kind=DP) :: epsilonMin
-        epsilonMin = -2.0_DP * (2.0_DP * Eh(env) + Ehc(env))
-    end function epsilonMin
+        real(kind=DP) :: epsilonMinF, abPart, cPart
+        abPart = abs(2.0_DP * Eh(env))
+        cPart = abs(Ehc(env))
+        epsilonMinF = -2.0_DP * (abPart + cPart)
+    end function epsilonMinF
 
-    ! Momentum-dependent functions.
+    ! Minimum of the holon spectrum.
+    ! Should work whether tB and tcBc are positive or negative.
+    function epsilonMinB(env)
+        type(Environ), intent(in) :: env
+        real(kind=DP) :: epsilonMinB, abPart, cPart
+        abPart = abs(2.0_DP * env%t * env%B)
+        cPart = abs(env%tc * env%Bc)
+        epsilonMinB = -4.0_DP * (abPart + cPart)
+    end function epsilonMinB
+
+    ! --- Momentum-dependent functions. ---
     ! Spinon spectrum.
-    function epsilonBar(env, k)
+    function epsilonBarF(env, k)
         type(Environ), intent(in) :: env
         real(kind=DP), dimension(1:3) :: k
-        real(kind=DP) :: epsilonBar
-        epsilonBar = -2.0_DP * (Eh(env) * (cos(k(1)) + cos(k(2))) +&
-                                Ehc(env) * cos(k(3)))
-    end function epsilonBar
+        real(kind=DP) :: epsilonBarF
+        epsilonBarF = -2.0_DP * (Eh(env) * (cos(k(1)) + cos(k(2))) +&
+                                 Ehc(env) * cos(k(3)))
+    end function epsilonBarF
 
     ! Spinon (diagonal-part) hopping energy, including chemical potential.
-    ! Minimum is -mu_f.
-    function xi(env, k)
+    ! Minimum is -muF.
+    function xiF(env, k)
         type(Environ), intent(in) :: env
         real(kind=DP), dimension(1:3) :: k
-        real(kind=DP) :: xi
-        xi = epsilonBar(env, k) - epsilonMin(env) - env%muf
-    end function xi
+        real(kind=DP) :: xiF
+        xiF = epsilonBarF(env, k) - epsilonMinF(env) - env%muF
+    end function xiF
+
+    ! Holon spectrum.
+    function epsilonBarB(env, k)
+        type(Environ), intent(in) :: env
+        real(kind=DP), dimension(1:3) :: k
+        real(kind=DP) :: epsilonBarB
+        epsilonBarB = -4.0_DP * (env%t * env%B * (cos(k(1)) + cos(k(2))) +&
+                                 env%tc * env%Bc * cos(k(3)))
+    end function epsilonBarB
+
+    ! Holon hopping energy, including chemical potential.
+    ! Minimum is -muB.
+    function xiB(env, k)
+        type(Environ), intent(in) :: env
+        real(kind=DP), dimension(1:3) :: k
+        real(kind=DP) :: xiB
+        xiB = epsilonBarB(env, k) - epsilonMinB(env) - env%muB
+    end function xiB
 
     ! Gap function (spinon k-up, minus-k-down coupled part).
     function Delta(env, k)
@@ -83,10 +114,10 @@ contains
         type(Environ), intent(in) :: env
         real(kind=DP), dimension(1:3) :: k
         real(kind=DP) :: bogoEnergy
-        bogoEnergy = sqrt(Delta(env, k) ** 2.0_DP + xi(env, k) ** 2.0_DP)
+        bogoEnergy = sqrt(Delta(env, k) ** 2.0_DP + xiF(env, k) ** 2.0_DP)
     end function bogoEnergy
 
-    ! Constructor for Environ.
+    ! --- Constructor for Environ. ---
     function NewEnv(zoneLength, t, tc, beta, x, J)
         integer, intent(in) :: zoneLength
         real(kind=DP), intent(in) :: t, tc, beta, x, J
@@ -105,7 +136,7 @@ contains
         NewEnv%Bc = 0.1
         NewEnv%A = 0.1
         NewEnv%Ac = 0.1
-        NewEnv%muf = 0.1    ! should be positive
-        NewEnv%mub = -0.1   ! should be negative
+        NewEnv%muF = 0.1    ! should be positive
+        NewEnv%muB = -0.1   ! should be negative
     end function NewEnv
 end module environment
