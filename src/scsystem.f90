@@ -48,7 +48,7 @@ contains
         type(Environ), intent(inout) :: env
         integer :: error, i
         error = 0
-        i = 0
+        i = 1
         do
             if (system%isSolved(env)) then
                 exit
@@ -58,7 +58,7 @@ contains
                 return
             end if
             if (.not. system%solvedUpTo(env, i)) then
-                i = 0
+                i = 1
             else
                 i = i + 1
             end if
