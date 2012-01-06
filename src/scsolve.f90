@@ -15,7 +15,7 @@ module scsolve
             use double
             use environment
             implicit none
-            type(Environ), intent(out) :: env
+            type(Environ), intent(inout) :: env
             real(kind=DP), intent(in) :: x
             real(kind=DP) :: setArgInterface
         end function

@@ -45,7 +45,7 @@ function setD(env, D)
     use double
     use environment
     implicit none
-    type(Environ), intent(out) :: env
+    type(Environ), intent(inout) :: env
     real(kind=DP), intent(in) :: D
     real(kind=DP) :: setD
     setD = env%D
@@ -56,7 +56,7 @@ function setA(env, A)
     use double
     use environment
     implicit none
-    type(Environ), intent(out) :: env
+    type(Environ), intent(inout) :: env
     real(kind=DP), intent(in) :: A
     real(kind=DP) :: setA
     setA = env%A

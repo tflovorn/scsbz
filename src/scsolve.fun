@@ -33,7 +33,7 @@ function setD(env, D)
     use double
     use environment
     implicit none
-    type(Environ), intent(out) :: env
+    type(Environ), intent(inout) :: env
     real(kind=DP), intent(in) :: D
     real(kind=DP) :: setD
     setD = env%D
