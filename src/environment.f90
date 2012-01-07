@@ -20,6 +20,29 @@ module environment
                          muB    ! holon chemical potential   
     end type Environ
 contains
+    ! --- Constructor for Environ. ---
+    function NewEnv(zoneLength, t, tc, beta, x, J)
+        integer, intent(in) :: zoneLength
+        real(kind=DP), intent(in) :: t, tc, beta, x, J
+        type(Environ) :: NewEnv
+        ! copy parameters
+        NewEnv%zoneLength = zoneLength
+        NewEnv%t = t
+        NewEnv%tc = tc
+        NewEnv%beta = beta
+        NewEnv%x = x
+        NewEnv%J = J
+        ! default values (TODO: change to reasonable guesses)
+        NewEnv%D = 0.1_DP
+        NewEnv%Dc = 0.1_DP
+        NewEnv%B = 0.1_DP
+        NewEnv%Bc = 0.1_DP
+        NewEnv%A = 0.1_DP
+        NewEnv%Ac = 0.1_DP
+        NewEnv%muF = 0.1_DP    ! should be positive
+        NewEnv%muB = -0.1_DP   ! should be negative
+    end function NewEnv
+
     ! --- Dependent parameters. ---
     ! c-direction singlet energy
     function Jc(env)
@@ -117,26 +140,20 @@ contains
         bogoEnergy = sqrt(Delta(env, k) ** 2.0_DP + xiF(env, k) ** 2.0_DP)
     end function bogoEnergy
 
-    ! --- Constructor for Environ. ---
-    function NewEnv(zoneLength, t, tc, beta, x, J)
-        integer, intent(in) :: zoneLength
-        real(kind=DP), intent(in) :: t, tc, beta, x, J
-        type(Environ) :: NewEnv
-        ! copy parameters
-        NewEnv%zoneLength = zoneLength
-        NewEnv%t = t
-        NewEnv%tc = tc
-        NewEnv%beta = beta
-        NewEnv%x = x
-        NewEnv%J = J
-        ! default values (TODO: change to reasonable guesses)
-        NewEnv%D = 0.1_DP
-        NewEnv%Dc = 0.1_DP
-        NewEnv%B = 0.1_DP
-        NewEnv%Bc = 0.1_DP
-        NewEnv%A = 0.1_DP
-        NewEnv%Ac = 0.1_DP
-        NewEnv%muF = 0.1_DP    ! should be positive
-        NewEnv%muB = -0.1_DP   ! should be negative
-    end function NewEnv
+    ! --- Distribution functions. ---
+    ! Fermi distribution function.
+    function fermi(env, energy)
+        type(Environ), intent(in) :: env
+        real(kind=DP), intent(in) :: energy
+        real(kind=DP) :: fermi
+        fermi = 1.0_DP / (exp(env%beta * energy) + 1.0_DP)
+    end function
+
+    ! Bose distribution function.
+    function bose(env, energy)
+        type(Environ), intent(in) :: env
+        real(kind=DP), intent(in) :: energy
+        real(kind=DP) :: bose
+        bose = 1.0_DP / (exp(env%beta * energy) - 1.0_DP)
+    end function
 end module environment
