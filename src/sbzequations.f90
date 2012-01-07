@@ -39,6 +39,39 @@ contains
         env%D = D
     end function
 
+    ! --- Dc equation ---
+    function sbzEqDc(env)
+        type(Environ), intent(in) :: env
+        type(SelfConsistentEq) :: sbzEqDc
+        ! (Mostly) arbitrary bounds (should Dc be positive?).
+        sbzEqDc%argMin = 1e-9
+        sbzEqDc%argMax = 10.0 * abs(env%tc)
+        sbzEqDc%setArg => setDc
+        sbzEqDc%absError => absErrorDc
+    end function
+
+    function absErrorDc(env)
+        type(Environ), intent(in) :: env
+        real(kind=DP) :: absErrorDc, rhs
+        rhs = BrilSum(env, sumFuncDc) / (env%zoneLength ** 3)
+        absErrorDc = env%Dc - rhs
+    end function
+
+    function sumFuncDc(env, k)
+        type(Environ), intent(in) :: env
+        real(kind=DP), intent(in) :: k(1:3)
+        real(kind=DP) :: sumFuncDc
+        sumFuncDc = cos(k(3)) * bose(env, xiB(env, k))
+    end function
+
+    function setDc(env, Dc)
+        type(Environ), intent(inout) :: env
+        real(kind=DP), intent(in) :: Dc
+        real(kind=DP) :: setDc
+        setDc = env%Dc
+        env%Dc = Dc
+    end function
+
     ! --- B equation ---
     function sbzEqB(env)
         type(Environ), intent(in) :: env
@@ -72,13 +105,46 @@ contains
         env%B = B
     end function
 
+    ! --- Bc equation ---
+    function sbzEqBc(env)
+        type(Environ), intent(in) :: env
+        type(SelfConsistentEq) :: sbzEqBc
+        ! (Mostly) arbitrary bounds (should Bc be positive?).
+        sbzEqBc%argMin = 1e-9
+        sbzEqBc%argMax = 10.0 * abs(env%tc)
+        sbzEqBc%setArg => setBc
+        sbzEqBc%absError => absErrorBc
+    end function
+
+    function absErrorBc(env)
+        type(Environ), intent(in) :: env
+        real(kind=DP) :: absErrorBc, rhs
+        rhs = BrilSum(env, sumFuncBc) / (env%zoneLength ** 3)
+        absErrorBc = env%Bc - rhs
+    end function
+
+    function sumFuncBc(env, k)
+        type(Environ), intent(in) :: env
+        real(kind=DP), intent(in) :: k(1:3)
+        real(kind=DP) :: sumFuncBc
+        sumFuncBc = 0.5_DP * cos(k(3)) * ((xiF(env, k) / bogoEnergy(env, k)) * (2.0_DP * fermi(env, xiF(env, k)) - 1.0_DP) + 1.0_DP)
+    end function
+
+    function setBc(env, Bc)
+        type(Environ), intent(inout) :: env
+        real(kind=DP), intent(in) :: Bc
+        real(kind=DP) :: setBc
+        setBc = env%Bc
+        env%Bc = Bc
+    end function
+
     ! --- A equation ---
     function sbzEqA(env)
         type(Environ), intent(in) :: env
         type(SelfConsistentEq) :: sbzEqA
         ! (Mostly) arbitrary bounds (should A be positive?).
         sbzEqA%argMin = 1e-9
-        sbzEqA%argMax = 10.0 * abs(env%t)
+        sbzEqA%argMax = 10.0 * abs(env%J)
         sbzEqA%setArg => setA
         sbzEqA%absError => absErrorA
     end function
@@ -103,6 +169,39 @@ contains
         real(kind=DP) :: setA
         setA = env%A
         env%A = A
+    end function
+
+    ! --- Ac equation ---
+    function sbzEqAc(env)
+        type(Environ), intent(in) :: env
+        type(SelfConsistentEq) :: sbzEqAc
+        ! (Mostly) arbitrary bounds (should Ac be positive?).
+        sbzEqAc%argMin = 1e-9
+        sbzEqAc%argMax = 10.0 * abs(Jc(env))
+        sbzEqAc%setArg => setAc
+        sbzEqAc%absError => absErrorAc
+    end function
+
+    function absErrorAc(env)
+        type(Environ), intent(in) :: env
+        real(kind=DP) :: absErrorAc, rhs
+        rhs = BrilSum(env, sumFuncAc) / (env%zoneLength ** 3)
+        absErrorAc = env%Ac - rhs
+    end function
+
+    function sumFuncAc(env, k)
+        type(Environ), intent(in) :: env
+        real(kind=DP), intent(in) :: k(1:3)
+        real(kind=DP) :: sumFuncAc
+        sumFuncAc = 0.5_DP * cos(k(3)) * (Delta(env, k) / bogoEnergy(env, k)) * (2.0_DP * fermi(env, xiF(env, k)) - 1.0_DP)
+    end function
+
+    function setAc(env, Ac)
+        type(Environ), intent(inout) :: env
+        real(kind=DP), intent(in) :: Ac
+        real(kind=DP) :: setAc
+        setAc = env%Ac
+        env%Ac = Ac
     end function
 
     ! --- muB equation ---
