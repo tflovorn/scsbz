@@ -1,6 +1,6 @@
 Solution of mean-field self-consistent equations in the pseudogap state for the slave-boson formalism of high-temperature superconductivity in the cuprates.
 
-Includes hopping in the c direction.
+Based on [Kotliar and Liu, PRB **38**, 7 (1988)](http://prb.aps.org/abstract/PRB/v38/i7/p5142_1). Includes hopping in the c direction from the start.
 
 Unit testing is done with [fUnit](http://nasarb.rubyforge.org/funit/).
 
