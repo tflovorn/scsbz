@@ -130,13 +130,13 @@ contains
         NewEnv%x = x
         NewEnv%J = J
         ! default values (TODO: change to reasonable guesses)
-        NewEnv%D = 0.1
-        NewEnv%Dc = 0.1
-        NewEnv%B = 0.1
-        NewEnv%Bc = 0.1
-        NewEnv%A = 0.1
-        NewEnv%Ac = 0.1
-        NewEnv%muF = 0.1    ! should be positive
-        NewEnv%muB = -0.1   ! should be negative
+        NewEnv%D = 0.1_DP
+        NewEnv%Dc = 0.1_DP
+        NewEnv%B = 0.1_DP
+        NewEnv%Bc = 0.1_DP
+        NewEnv%A = 0.1_DP
+        NewEnv%Ac = 0.1_DP
+        NewEnv%muF = 0.1_DP    ! should be positive
+        NewEnv%muB = -0.1_DP   ! should be negative
     end function NewEnv
 end module environment
