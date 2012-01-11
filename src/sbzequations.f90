@@ -6,6 +6,41 @@ module sbzequations
     use scsystem
     implicit none
 contains
+    ! --- Full self-consistent system ---
+    function sbzSystem(env, tolerances)
+        type(Environ), intent(in) :: env
+        real(kind=DP), dimension(:), allocatable :: tolerances
+        type(SelfConsistentEq), dimension(:), allocatable :: equations
+        type(SelfConsistentSystem) :: sbzSystem
+        allocate(equations(1:8))
+        equations(1) = sbzEqMuF(env)
+        equations(2) = sbzEqMuB(env)
+        equations(3) = sbzEqD(env)
+        equations(4) = sbzEqDc(env)
+        equations(5) = sbzEqB(env)
+        equations(6) = sbzEqBc(env)
+        equations(7) = sbzEqA(env)
+        equations(8) = sbzEqAc(env)
+        sbzSystem%tolerances = tolerances
+        sbzSystem%equations = equations
+    end function
+
+    ! --- Self-consistent system without c-direction equations ---
+    function sbzSystemNoC(env, tolerances)
+        type(Environ), intent(in) :: env
+        real(kind=DP), dimension(:), allocatable :: tolerances
+        type(SelfConsistentEq), dimension(:), allocatable :: equations
+        type(SelfConsistentSystem) :: sbzSystemNoC
+        allocate(equations(1:5))
+        equations(1) = sbzEqMuF(env)
+        equations(2) = sbzEqMuB(env)
+        equations(3) = sbzEqD(env)
+        equations(4) = sbzEqB(env)
+        equations(5) = sbzEqA(env)
+        sbzSystemNoC%tolerances = tolerances
+        sbzSystemNoC%equations = equations
+    end function
+
     ! --- D equation ---
     function sbzEqD(env)
         type(Environ), intent(in) :: env
