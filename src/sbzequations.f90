@@ -5,6 +5,10 @@ module sbzequations
     use scsolve
     use scsystem
     implicit none
+
+    ! Number of self-consistent equations in the full system
+    integer, parameter :: sbzNumEquations = 8
+
 contains
     ! --- Full self-consistent system ---
     function sbzSystem(env, tolerances)
