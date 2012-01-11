@@ -3,7 +3,7 @@ FFLAGS =
 
 LDFLAGS =
 
-all: driver.mod
+all: main.out
 
 double.mod double.o: double.f90
 	$(FC) $(FFLAGS) -c -o double.o double.f90
@@ -25,3 +25,6 @@ sbzequations.mod sbzequations.o: brillouin.mod brillouin.o scsystem.mod scsystem
 
 driver.mod driver.o: sbzequations.mod sbzequations.o driver.f90
 	$(FC) $(FFLAGS) -c -o driver.o driver.f90
+
+main.out: driver.mod driver.o main.f90
+	$(FC) $(FFLAGS) $(LDFLAGS) -o main.out main.f90 driver.o sbzequations.o scsystem.o scsolve.o brillouin.o environment.o double.o

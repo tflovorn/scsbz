@@ -3,3 +3,4 @@
 *.o
 *TestRunner*
 *_fun.f90
+*.out
