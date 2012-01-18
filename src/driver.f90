@@ -32,27 +32,23 @@ contains
             system = sbzSystemNoC(env, toleranceValues)
             error = scSystemSolve(system, env)
             if (error > 0) then
-                ! Quit at the first error.
-                ! May instead want to continue on here.
+                write (outputUnit, *) "!tc=0 run failed; error = ", error
                 sbzRun = error
-                exit
+                cycle
             end if
             ! Done with tc = 0 approximation. Move on to real system.
             env%tc = tc
             system = sbzSystem(env, toleranceValues)
             error = scSystemSolve(system, env)
             if (error > 0) then
-                ! Quit at the first error.
-                ! May instead want to continue on here, and write error
-                ! indicators on the appropriate lines of the output file.
+                write (outputUnit, *) "!run failed; error = ", error
                 sbzRun = error
-                exit
+                cycle
             end if
             write (outputUnit, *) env%muF, env%muB, env%D, env%B, env%A
             write (outputUnit, *) env%Dc, env%Bc, env%Ac
             flush (outputUnit)
         end do
-        sbzRun = 0 ! no error
         close (inputUnit)
         close (outputUnit)
     end function
