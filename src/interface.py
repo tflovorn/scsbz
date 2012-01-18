@@ -18,6 +18,9 @@ def executeRuns(paramList, paramFilePath, outputFilePath):
     outputList = []
     outputFile = open(outputFilePath, 'r')
     for line in outputFile.readlines():
+        if line.at(0) == "!":
+            outputList.append({})
+            continue
         values = " ".split(line)
         lineDict = {}
         for i, key in enumerate(outOrder):
