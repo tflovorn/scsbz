@@ -45,8 +45,8 @@ contains
                 sbzRun = error
                 cycle
             end if
-            write (outputUnit, *) env%muF, env%muB, env%D, env%B, env%A
-            write (outputUnit, *) env%Dc, env%Bc, env%Ac
+            write (outputUnit, *) env%muF, env%muB, env%D, env%B, env%A,&
+                                  env%Dc, env%Bc, env%Ac
             flush (outputUnit)
         end do
         close (inputUnit)
