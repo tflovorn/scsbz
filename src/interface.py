@@ -26,11 +26,12 @@ def executeRuns(paramList, paramFilePath, outputFilePath):
     # read output
     outputList = []
     outputFile = open(outputFilePath, 'r')
+    outputFile.readline() # skip first line
     for line in outputFile.readlines():
         if line[0] == "!":
             outputList.append({})
             continue
-        values = " ".split(line)
+        values = line.split()
         lineDict = {}
         for i, key in enumerate(outOrder()):
             lineDict[key] = values[i]
@@ -45,3 +46,8 @@ def validateParams(paramList):
             if key not in params:
                 return False
     return True
+
+if __name__ == "__main__":
+    paramList = [{"zoneLength": 64, "t": 1.0, "tc": 0.1, "beta": 1.0, "x": 0.1, "J": 0.25}]
+    output = executeRuns(paramList, "testInFile", "testOutFile")
+    print output
